@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Flashy</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="decks">Mazos</string>
+    <string name="cards_fragment_label">Cartas</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="placeholder_deck_name">Diseño Instruccional</string>
+    <string name="study">Estudiar</string>
+    <string name="preview">Vista\nPrevia</string>
+    <string name="placeholder_card_front">Diseño Instruccional</string>
+    <string name="create_new_deck">Crear nuevo mazo</string>
+    <string name="create_new_card">Crear nueva carta</string>
+    <string name="create">Crear</string>
+    <string name="edit_card">Editar Carta</string>
+    <string name="edit_deck">Editar Mazo</string>
+    <string name="front_content">Contenido Frontal</string>
+    <string name="back_content">Contenido Posterior</string>
+    <string name="card_content">Card Content</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="deck_name">Nombre del mazo</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_card_confirmation_text">¿Desea eliminar esta carta?</string>
+    <string name="delete_deck_confirmation_text">¿Desea eliminar este mazo?</string>
+    <string name="all_cards_will_be_deleted">Se eliminarán todas las cartas contenidas en él.</string>
+    <string name="confirmation">Confirmación</string>
+    <string name="delete">Eliminar</string>
+    <string name="rename">Renombrar</string>
+    <string name="rename_deck">Renombrar Mazo</string>
+    <string name="delete_deck">Eliminar Mazo</string>
+    <string name="turn_over">Voltear</string>
+    <string name="again">De Nuevo</string>
+    <string name="good">Bien</string>
+</resources>

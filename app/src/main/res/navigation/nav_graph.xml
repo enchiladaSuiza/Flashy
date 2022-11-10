@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/decksFragment">
+
+    <fragment
+        android:id="@+id/decksFragment"
+        android:name="com.example.flashy.fragments.DecksFragment"
+        android:label="@string/decks"
+        tools:layout="@layout/fragment_decks">
+        <action
+            android:id="@+id/action_decksFragment_to_cardsFragment"
+            app:destination="@id/cardsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_decksFragment_to_cardFrontFragment"
+            app:destination="@id/cardFrontFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardsFragment"
+        android:name="com.example.flashy.fragments.CardsFragment"
+        android:label="@string/cards_fragment_label"
+        tools:layout="@layout/fragment_cards">
+        <argument
+            android:name="deckId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_cardsFragment_to_cardEditFragment"
+            app:destination="@id/cardEditFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_cardsFragment_to_cardFrontFragment"
+            app:destination="@id/cardFrontFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardEditFragment"
+        android:name="com.example.flashy.fragments.CardEditFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_card_edit">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="cardId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="deckId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardFrontFragment"
+        android:name="com.example.flashy.fragments.CardFrontFragment"
+        android:label="@string/front_content"
+        tools:layout="@layout/fragment_card_front">
+        <action
+            android:id="@+id/action_cardFrontFragment_to_cardBackFragment"
+            app:destination="@id/cardBackFragment" />
+        <argument
+            android:name="cardId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="deckId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="rating"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="index"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardBackFragment"
+        android:name="com.example.flashy.fragments.CardBackFragment"
+        android:label="@string/back_content"
+        tools:layout="@layout/fragment_card_back" >
+        <argument
+            android:name="cardId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="deckId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_cardBackFragment_to_cardFrontFragment"
+            app:destination="@id/cardFrontFragment" />
+        <argument
+            android:name="index"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+</navigation>
