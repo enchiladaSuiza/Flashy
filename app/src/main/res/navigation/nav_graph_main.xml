@@ -18,8 +18,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_decksFragment_to_cardFrontFragment"
-            app:destination="@id/cardFrontFragment" />
+            android:id="@+id/action_decksFragment_to_studyActivity"
+            app:destination="@id/studyActivity" />
     </fragment>
     <fragment
         android:id="@+id/cardsFragment"
@@ -38,8 +38,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_cardsFragment_to_cardFrontFragment"
-            app:destination="@id/cardFrontFragment" />
+            android:id="@+id/action_cardsFragment_to_studyActivity"
+            app:destination="@id/studyActivity" />
     </fragment>
     <fragment
         android:id="@+id/cardEditFragment"
@@ -58,50 +58,9 @@
             android:defaultValue="-1"
             app:argType="integer" />
     </fragment>
-    <fragment
-        android:id="@+id/cardFrontFragment"
-        android:name="com.example.flashy.fragments.CardFrontFragment"
-        android:label="@string/front_content"
-        tools:layout="@layout/fragment_card_front">
-        <action
-            android:id="@+id/action_cardFrontFragment_to_cardBackFragment"
-            app:destination="@id/cardBackFragment" />
-        <argument
-            android:name="cardId"
-            app:argType="integer"
-            android:defaultValue="-1" />
-        <argument
-            android:name="deckId"
-            app:argType="integer"
-            android:defaultValue="-1" />
-        <argument
-            android:name="rating"
-            app:argType="integer"
-            android:defaultValue="-1" />
-        <argument
-            android:name="index"
-            app:argType="integer"
-            android:defaultValue="0" />
-    </fragment>
-    <fragment
-        android:id="@+id/cardBackFragment"
-        android:name="com.example.flashy.fragments.CardBackFragment"
-        android:label="@string/back_content"
-        tools:layout="@layout/fragment_card_back" >
-        <argument
-            android:name="cardId"
-            app:argType="integer"
-            android:defaultValue="-1" />
-        <argument
-            android:name="deckId"
-            app:argType="integer"
-            android:defaultValue="-1" />
-        <action
-            android:id="@+id/action_cardBackFragment_to_cardFrontFragment"
-            app:destination="@id/cardFrontFragment" />
-        <argument
-            android:name="index"
-            app:argType="integer"
-            android:defaultValue="0" />
-    </fragment>
+    <activity
+        android:id="@+id/studyActivity"
+        android:name="com.example.flashy.StudyActivity"
+        android:label="StudyActivity"
+        tools:layout="@layout/activity_study"/>
 </navigation>

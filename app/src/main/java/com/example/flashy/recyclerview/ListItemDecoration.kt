@@ -15,8 +15,8 @@ class ListItemDecoration(private val space: Int) : RecyclerView.ItemDecoration()
 
         outRect.left = space
         outRect.right = space
-        outRect.bottom = space / 2
-        outRect.top = space / 2
+        outRect.bottom = space
+        outRect.top = 0
 
         if (position < 1) {
             outRect.top = space

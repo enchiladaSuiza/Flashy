@@ -44,8 +44,8 @@ class CardsFragment : Fragment() {
                     R.string.edit_card), it.id, it.deck)
             this.findNavController().navigate(action)
         }, {
-            val action = CardsFragmentDirections
-                .actionCardsFragmentToCardFrontFragment(cardId = it.id)
+            StudyManager.getInstance().preparePreview(viewModel, it.id)
+            val action = CardsFragmentDirections.actionCardsFragmentToStudyActivity()
             this.findNavController().navigate(action)
         })
         binding.recyclerView.adapter = adapter

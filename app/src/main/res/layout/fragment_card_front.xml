@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.BlankFragment">
+    tools:context=".fragments.CardFrontFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/card_front_text"
         android:layout_width="0dp"
@@ -16,6 +15,7 @@
         android:layout_marginBottom="64dp"
         android:gravity="center"
         android:textAlignment="center"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

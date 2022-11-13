@@ -10,12 +10,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.flashy.FlashcardsApplication
 import com.example.flashy.FlashcardsViewModel
+import com.example.flashy.R
+import com.example.flashy.StudyManager
+import com.example.flashy.database.Card
 import com.example.flashy.databinding.FragmentCardBackBinding
 
 class CardBackFragment : Fragment() {
     private var _binding: FragmentCardBackBinding? = null
     private val binding get() = _binding!!
-    private val navigationArgs: CardBackFragmentArgs by navArgs()
+    /*private val navigationArgs: CardBackFragmentArgs by navArgs()*/
 
     private val viewModel: FlashcardsViewModel by activityViewModels {
         FlashcardsViewModel.FlashcardsViewModelFactory(
@@ -34,21 +37,19 @@ class CardBackFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (navigationArgs.deckId == -1) {
-            bindForPreview(navigationArgs.cardId)
-        }
-        else {
-            bindForStudy(navigationArgs.cardId)
-        }
+        bindForStudy(StudyManager.getInstance().currentCard())
     }
 
     private fun goToNextFront(currentRating: Int) {
-        val action = CardBackFragmentDirections
-            .actionCardBackFragmentToCardFrontFragment(
-                deckId = navigationArgs.deckId,
-                rating = currentRating,
-                index = navigationArgs.index + 1)
-        this.findNavController().navigate(action)
+        if (StudyManager.getInstance().index() ==
+            StudyManager.getInstance().size()?.minus(1)) {
+            requireActivity().finish()
+        }
+        else {
+            StudyManager.getInstance().nextCard()
+            findNavController().navigate(CardBackFragmentDirections
+                .actionCardBackFragmentToCardFrontFragment())
+        }
     }
 
     private fun bindForPreview(cardId: Int) {
@@ -60,13 +61,12 @@ class CardBackFragment : Fragment() {
             }
     }
 
-    private fun bindForStudy(cardId: Int) {
-        viewModel.retrieveCard(cardId)
-            .observe(this.viewLifecycleOwner) { selectedCard ->
-                binding.cardBackText.text = selectedCard.backContent
-                binding.goodButton.setOnClickListener { goToNextFront(1) }
-                binding.againButton.setOnClickListener { goToNextFront(0) }
-            }
+    private fun bindForStudy(card: Card?) {
+        binding.apply {
+            cardBackText.text = card?.backContent ?: ""
+            goodButton.setOnClickListener { goToNextFront(1) }
+            againButton.setOnClickListener { goToNextFront(0) }
+        }
     }
 
     private fun goToCardsFragment() {

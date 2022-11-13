@@ -49,8 +49,8 @@ class DecksFragment : Fragment() {
         }, {
             showDeckOptionsDialog(it)
         }, {
-            val action = DecksFragmentDirections
-                .actionDecksFragmentToCardFrontFragment(deckId = it.id)
+            StudyManager.getInstance().prepareCards(viewModel, it.id)
+            val action = DecksFragmentDirections.actionDecksFragmentToStudyActivity()
             this.findNavController().navigate(action)
         })
         binding.recyclerView.adapter = adapter
@@ -60,7 +60,7 @@ class DecksFragment : Fragment() {
             }
         }
         binding.recyclerView.layoutManager = GridLayoutManager(this.context, 2)
-        binding.recyclerView.addItemDecoration(GridItemDecoration(20))
+        binding.recyclerView.addItemDecoration(GridItemDecoration(22))
         binding.decksFab.setOnClickListener {
             showDeckEditDialog()
         }

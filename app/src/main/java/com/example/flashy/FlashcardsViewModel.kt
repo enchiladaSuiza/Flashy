@@ -87,16 +87,8 @@ class FlashcardsViewModel(
         return cardDao.getCardsFromDeck(deckId).asLiveData()
     }
 
-    fun retrieveCardsFromDeckInTime(deckId: Int): LiveData<List<Card>> {
-        val mediator: MediatorLiveData<List<Card>> = MediatorLiveData()
-        val cards = cardDao.getCardsFromDeck(deckId).asLiveData()
-        mediator.addSource(cards) { cardList ->
-            if (cardList != null) {
-                mediator.removeSource(cards)
-                mediator.value = cardList
-            }
-        }
-        return mediator
+    fun retrieveCardsFromDeckInTime(deckId: Int): List<Card> {
+        return retrieveCardsFromDeck(deckId).value!!
     }
 
     private fun getNewCardEntry(
