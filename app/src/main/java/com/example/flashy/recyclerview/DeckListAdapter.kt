@@ -24,12 +24,13 @@ class DeckListAdapter(
         fun bind(deck: Deck) {
             binding.apply {
                 deckName.text = deck.name
-                itemDeckLayout.setOnClickListener { onDeckClicked(deck) }
+                itemDeckLayout.setOnClickListener { onStudyClicked(deck) }
                 itemDeckLayout.setOnLongClickListener {
                     onDeckLongClicked(deck)
                     true
                 }
-                studyDeck.setOnClickListener { onStudyClicked(deck) }
+                cardViewButton.setOnClickListener { onDeckClicked(deck) }
+                deckEditButton.setOnClickListener { onDeckLongClicked(deck) }
             }
         }
     }

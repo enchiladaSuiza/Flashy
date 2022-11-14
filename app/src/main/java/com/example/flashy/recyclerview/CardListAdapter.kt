@@ -20,7 +20,7 @@ class CardListAdapter(
             binding.apply {
                 cardFront.text = card.frontContent
                 itemCardLayout.setOnClickListener { onCardClicked(card) }
-                previewCard.setOnClickListener { onPreviewClicked(card) }
+                cardPreviewButton.setOnClickListener { onPreviewClicked(card) }
             }
         }
     }

@@ -36,4 +36,5 @@
     <string name="turn_over">Voltear</string>
     <string name="again">De Nuevo</string>
     <string name="good">Bien</string>
+    <string name="card_view_button_description">Ver las cartas de este mazo</string>
 </resources>
