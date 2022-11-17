@@ -8,19 +8,27 @@
     <fragment
         android:id="@+id/cardFrontFragment"
         android:name="com.example.flashy.fragments.CardFrontFragment"
-        android:label="@string/front_content"
+        android:label="{title}"
         tools:layout="@layout/fragment_card_front">
         <action
             android:id="@+id/action_cardFrontFragment_to_cardBackFragment"
             app:destination="@id/cardBackFragment" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
     <fragment
         android:id="@+id/cardBackFragment"
         android:name="com.example.flashy.fragments.CardBackFragment"
-        android:label="@string/back_content"
+        android:label="{title}"
         tools:layout="@layout/fragment_card_back" >
         <action
             android:id="@+id/action_cardBackFragment_to_cardFrontFragment"
             app:destination="@id/cardFrontFragment" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
 </navigation>

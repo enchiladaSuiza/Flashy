@@ -4,27 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.flashy.FlashcardsApplication
-import com.example.flashy.FlashcardsViewModel
-import com.example.flashy.R
-import com.example.flashy.StudyManager
+import com.example.flashy.*
 import com.example.flashy.database.Card
 import com.example.flashy.databinding.FragmentCardBackBinding
 
 class CardBackFragment : Fragment() {
     private var _binding: FragmentCardBackBinding? = null
     private val binding get() = _binding!!
-    /*private val navigationArgs: CardBackFragmentArgs by navArgs()*/
 
     private val viewModel: FlashcardsViewModel by activityViewModels {
         FlashcardsViewModel.FlashcardsViewModelFactory(
             (activity?.application as FlashcardsApplication).database.deckDao(),
             (activity?.application as FlashcardsApplication).database.cardDao()
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        /*(requireActivity() as AppCompatActivity).supportActionBar?.title =
+            requireActivity().intent?.extras?.let { StudyActivityArgs.fromBundle(it).title }*/
     }
 
     override fun onCreateView(
@@ -42,7 +46,8 @@ class CardBackFragment : Fragment() {
 
     private fun goToNextFront(currentRating: Int) {
         if (StudyManager.getInstance().index() ==
-            StudyManager.getInstance().size()?.minus(1)) {
+            StudyManager.getInstance().size() - 1) {
+            StudyManager.getInstance().discard()
             requireActivity().finish()
         }
         else {
@@ -57,15 +62,22 @@ class CardBackFragment : Fragment() {
             .observe(this.viewLifecycleOwner) { selectedCard ->
                 binding.cardBackText.text = selectedCard.backContent
                 binding.goodButton.setOnClickListener { goToCardsFragment() }
-                binding.againButton.setOnClickListener { goToCardsFragment() }
+                binding.againButton.setOnClickListener {
+                    StudyManager.getInstance().sendCurrentCardToBack()
+                    goToCardsFragment()
+                }
             }
     }
 
     private fun bindForStudy(card: Card?) {
         binding.apply {
+            remainingCardsBack.text = StudyManager.getInstance().remainingCards().toString()
             cardBackText.text = card?.backContent ?: ""
             goodButton.setOnClickListener { goToNextFront(1) }
-            againButton.setOnClickListener { goToNextFront(0) }
+            againButton.setOnClickListener {
+                StudyManager.getInstance().sendCurrentCardToBack()
+                goToNextFront(0)
+            }
         }
     }
 

@@ -13,8 +13,8 @@
     <string name="study">Estudiar</string>
     <string name="preview">Vista\nPrevia</string>
     <string name="placeholder_card_front">Diseño Instruccional</string>
-    <string name="create_new_deck">Crear nuevo mazo</string>
-    <string name="create_new_card">Crear nueva carta</string>
+    <string name="create_new_deck">Crear Nuevo Mazo</string>
+    <string name="create_new_card">Crear Nueva Carta</string>
     <string name="create">Crear</string>
     <string name="edit_card">Editar Carta</string>
     <string name="edit_deck">Editar Mazo</string>
@@ -37,4 +37,5 @@
     <string name="again">De Nuevo</string>
     <string name="good">Bien</string>
     <string name="card_view_button_description">Ver las cartas de este mazo</string>
+    <string name="quit">Salir</string>
 </resources>

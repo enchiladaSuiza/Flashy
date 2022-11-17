@@ -61,6 +61,11 @@
     <activity
         android:id="@+id/studyActivity"
         android:name="com.example.flashy.StudyActivity"
-        android:label="StudyActivity"
-        tools:layout="@layout/activity_study"/>
+        android:label="{title}"
+        tools:layout="@layout/activity_study">
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="Estudio" />
+    </activity>
 </navigation>
