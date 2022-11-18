@@ -40,6 +40,7 @@ class StudyManager private constructor() {
         this.owner = owner
         this.cardId = cardId
         viewModel.retrieveCard(cardId).observe(owner, observeCard)
+        againCards = mutableListOf()
         index = 0
     }
 

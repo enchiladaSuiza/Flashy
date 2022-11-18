@@ -38,7 +38,6 @@ class CardsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val deckId = navigationArgs.deckId
         val adapter = CardListAdapter ({
             val action = CardsFragmentDirections
                 .actionCardsFragmentToCardEditFragment(getString(
@@ -46,11 +45,14 @@ class CardsFragment : Fragment() {
             this.findNavController().navigate(action)
         }, {
             StudyManager.getInstance().preparePreview(this.viewLifecycleOwner, viewModel, it.id)
+            val deckName = viewModel.retrieveDeck(it.deck).value?.name
             val action = CardsFragmentDirections
-                .actionCardsFragmentToStudyActivity("Vista Previa")
+                .actionCardsFragmentToStudyActivity("Vista previa")
             this.findNavController().navigate(action)
         })
         binding.recyclerView.adapter = adapter
+
+        val deckId = navigationArgs.deckId
         viewModel.retrieveCardsFromDeck(deckId).observe(this.viewLifecycleOwner) { cards ->
             cards.let {
                 adapter.submitList(it)
