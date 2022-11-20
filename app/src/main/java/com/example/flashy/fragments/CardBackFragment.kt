@@ -1,10 +1,13 @@
 package com.example.flashy.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,17 +15,11 @@ import androidx.navigation.fragment.navArgs
 import com.example.flashy.*
 import com.example.flashy.database.Card
 import com.example.flashy.databinding.FragmentCardBackBinding
+import java.io.File
 
 class CardBackFragment : Fragment() {
     private var _binding: FragmentCardBackBinding? = null
     private val binding get() = _binding!!
-
-    private val viewModel: FlashcardsViewModel by activityViewModels {
-        FlashcardsViewModel.FlashcardsViewModelFactory(
-            (activity?.application as FlashcardsApplication).database.deckDao(),
-            (activity?.application as FlashcardsApplication).database.cardDao()
-        )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,26 +54,32 @@ class CardBackFragment : Fragment() {
         }
     }
 
-    private fun bindForPreview(cardId: Int) {
-        viewModel.retrieveCard(cardId)
-            .observe(this.viewLifecycleOwner) { selectedCard ->
-                binding.cardBackText.text = selectedCard.backContent
-                binding.goodButton.setOnClickListener { goToCardsFragment() }
-                binding.againButton.setOnClickListener {
-                    StudyManager.getInstance().sendCurrentCardToBack()
-                    goToCardsFragment()
-                }
-            }
-    }
-
-    private fun bindForStudy(card: Card?) {
+    private fun bindForStudy(card: Card) {
         binding.apply {
             remainingCardsBack.text = StudyManager.getInstance().remainingCards().toString()
-            cardBackText.text = card?.backContent ?: ""
+            if (card.backContent.isBlank()) {
+                backCardLayout.removeView(cardBackText)
+                backImageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    topToBottom = ConstraintLayout.LayoutParams.UNSET
+                    topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+                    topMargin = 32
+                }
+            } else {
+                cardBackText.text = card.backContent
+            }
             goodButton.setOnClickListener { goToNextFront(1) }
             againButton.setOnClickListener {
                 StudyManager.getInstance().sendCurrentCardToBack()
                 goToNextFront(0)
+            }
+            if (card.backImage != null) {
+                backImageView.setImageURI(Uri.fromFile(File(card.backImage)))
+            } else {
+                backCardLayout.removeView(backImageView)
+                cardBackText.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    bottomToTop = ConstraintLayout.LayoutParams.UNSET
+                    bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                }
             }
         }
     }

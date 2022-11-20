@@ -11,49 +11,164 @@
         android:id="@+id/card_content_scrollview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:contentDescription="@string/card_content"
         app:layout_constraintBottom_toTopOf="@+id/save_card_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/front_content"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"
-                android:layout_marginLeft="44dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="28dp"
                 android:layout_marginEnd="44dp"
-                android:layout_marginRight="44dp"
                 android:ems="10"
-                android:hint="@string/front_content"
+                android:hint="@string/front_text"
                 android:importantForAutofill="no"
                 android:inputType="textLongMessage|textMultiLine"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <ImageView
+                android:id="@+id/card_front_image_capture"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/take_front_photo"
+                android:src="@drawable/ic_baseline_camera_alt_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_front_image_pick"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/front_content" />
+
+            <ImageView
+                android:id="@+id/card_front_image_pick"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/card_front_image_button_desc"
+                android:src="@drawable/ic_baseline_image_search_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_front_image_remove"
+                app:layout_constraintStart_toEndOf="@+id/card_front_image_capture"
+                app:layout_constraintTop_toBottomOf="@+id/front_content" />
+
+            <ImageView
+                android:id="@+id/card_front_image_remove"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="44dp"
+                android:contentDescription="@string/remove_front_image"
+                android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/card_front_image_pick"
+                app:layout_constraintTop_toBottomOf="@+id/front_content" />
+
+            <ImageView
+                android:id="@+id/card_front_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="44dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/front_image"
+                android:maxWidth="256dp"
+                android:maxHeight="256dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_front_image_capture" />
 
             <EditText
                 android:id="@+id/back_content"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"
-                android:layout_marginLeft="44dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="14dp"
                 android:layout_marginEnd="44dp"
-                android:layout_marginRight="44dp"
                 android:ems="10"
-                android:hint="@string/back_content"
+                android:hint="@string/back_text"
                 android:importantForAutofill="no"
                 android:inputType="textLongMessage|textMultiLine"
-                android:minHeight="48dp" />
-        </LinearLayout>
+                android:minHeight="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_front_image" />
+
+            <ImageView
+                android:id="@+id/card_back_image_capture"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/take_back_photo"
+                android:src="@drawable/ic_baseline_camera_alt_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_back_image_pick"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/back_content" />
+
+            <ImageView
+                android:id="@+id/card_back_image_pick"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/card_back_image_button_desc"
+                android:src="@drawable/ic_baseline_image_search_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_back_image_remove"
+                app:layout_constraintStart_toEndOf="@+id/card_back_image_capture"
+                app:layout_constraintTop_toBottomOf="@+id/back_content" />
+
+            <ImageView
+                android:id="@+id/card_back_image_remove"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="44dp"
+                android:contentDescription="@string/remove_back_image"
+                android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/card_back_image_pick"
+                app:layout_constraintTop_toBottomOf="@+id/back_content" />
+
+            <ImageView
+                android:id="@+id/card_back_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="44dp"
+                android:layout_marginBottom="14dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/back_image"
+                android:maxWidth="256dp"
+                android:maxHeight="256dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_back_image_capture" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <Button
@@ -61,11 +176,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/delete_card_button"
-        app:layout_constraintTop_toBottomOf="@+id/card_content_scrollview"
         app:layout_goneMarginStart="0dp" />
 
     <Button

@@ -1,6 +1,8 @@
 package com.example.flashy.fragments
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -15,17 +19,11 @@ import com.example.flashy.*
 import com.example.flashy.database.Card
 import com.example.flashy.databinding.FragmentCardFrontBinding
 import com.example.flashy.databinding.FragmentCardsBinding
+import java.io.File
 
 class CardFrontFragment : Fragment() {
     private var _binding: FragmentCardFrontBinding? = null
     private val binding get() = _binding!!
-
-    private val viewModel: FlashcardsViewModel by activityViewModels {
-        FlashcardsViewModel.FlashcardsViewModelFactory(
-            (activity?.application as FlashcardsApplication).database.deckDao(),
-            (activity?.application as FlashcardsApplication).database.cardDao()
-        )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,19 +69,29 @@ class CardFrontFragment : Fragment() {
         _binding = null
     }
 
-    private fun bindForPreview(cardId: Int) {
-        viewModel.retrieveCard(cardId)
-            .observe(this.viewLifecycleOwner) { selectedCard ->
-                binding.cardFrontText.text = selectedCard.frontContent
-                binding.turnOverButton.setOnClickListener { goToCardBack(cardId) }
-            }
-    }
-
-    private fun bindForStudy(card: Card?) {
+    private fun bindForStudy(card: Card) {
         binding.apply {
             remainingCardsFront.text = StudyManager.getInstance().remainingCards().toString()
-            cardFrontText.text = card?.frontContent ?: ""
+            if (card.frontContent.isBlank()) {
+                frontCardLayout.removeView(cardFrontText)
+                frontImageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    topToBottom = ConstraintLayout.LayoutParams.UNSET
+                    topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+                    topMargin = 32
+                }
+            } else {
+                cardFrontText.text = card.frontContent
+            }
             binding.turnOverButton.setOnClickListener { goToCardBack() }
+            if (card.frontImage != null) {
+                frontImageView.setImageURI(Uri.fromFile(File(card.frontImage)))
+            } else {
+                frontCardLayout.removeView(frontImageView)
+                cardFrontText.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    bottomToTop = ConstraintLayout.LayoutParams.UNSET
+                    bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                }
+            }
         }
     }
 

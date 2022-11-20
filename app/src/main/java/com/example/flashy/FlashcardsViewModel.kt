@@ -94,20 +94,26 @@ class FlashcardsViewModel(
     private fun getNewCardEntry(
         front: String,
         back: String,
-        deckId: Int
+        deckId: Int,
+        fImage: String? = null,
+        bImage: String? = null,
     ): Card {
         return Card(
             frontContent = front,
             backContent = back,
-            deck = deckId
+            deck = deckId,
+            frontImage = fImage,
+            backImage = bImage
         )
     }
 
     fun addNewCard(
         front: String,
         back: String,
-        deckId: Int) {
-        val card = getNewCardEntry(front, back, deckId)
+        deckId: Int,
+        fImage: String? = null,
+        bImage: String? = null) {
+        val card = getNewCardEntry(front, back, deckId, fImage, bImage)
         insertCard(card)
     }
 
@@ -115,21 +121,27 @@ class FlashcardsViewModel(
         cardId: Int,
         front: String,
         back: String,
-        deckId: Int): Card {
+        deckId: Int,
+        fImage: String? = null,
+        bImage: String? = null): Card {
         return Card(
             id = cardId,
             frontContent = front,
             backContent = back,
-            deck = deckId)
+            deck = deckId,
+            frontImage = fImage,
+            backImage = bImage)
     }
 
     fun updateExistingCard(
         cardId: Int,
         front: String,
         back: String,
-        deckId: Int
+        deckId: Int,
+        fImage: String? = null,
+        bImage: String? = null
     ) {
-        val updatedCard = getUpdatedCardEntry(cardId, front, back, deckId)
+        val updatedCard = getUpdatedCardEntry(cardId, front, back, deckId, fImage, bImage)
         updateCard(updatedCard)
     }
 

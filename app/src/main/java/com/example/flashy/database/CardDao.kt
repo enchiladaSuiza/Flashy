@@ -23,6 +23,12 @@ interface CardDao {
     @Query("SELECT deck FROM card WHERE card.id = :id")
     fun getDeckId(id: Int): Flow<Int>
 
+    @Query("SELECT front_image FROM card WHERE card.id = :id")
+    fun getFrontImage(id: Int): Flow<String>
+
+    @Query("SELECT back_image FROM card WHERE card.id = :id")
+    fun getBackImage(id: Int): Flow<String>
+
     @Query("SELECT * FROM card WHERE card.deck = :deckId")
     fun getCardsFromDeck(deckId: Int): Flow<List<Card>>
 
