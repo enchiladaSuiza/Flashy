@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginTop
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -57,13 +59,16 @@ class CardBackFragment : Fragment() {
     private fun bindForStudy(card: Card) {
         binding.apply {
             remainingCardsBack.text = StudyManager.getInstance().remainingCards().toString()
+            if (card.backImage != null) {
+                backImageView.setImageURI(Uri.fromFile(File(card.backImage)))
+            } else {
+                backCardLayout.removeView(backImageView)
+                cardBackText.updateLayoutParams<LinearLayout.LayoutParams> {
+                    bottomMargin = 0
+                }
+            }
             if (card.backContent.isBlank()) {
                 backCardLayout.removeView(cardBackText)
-                backImageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    topToBottom = ConstraintLayout.LayoutParams.UNSET
-                    topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-                    topMargin = 32
-                }
             } else {
                 cardBackText.text = card.backContent
             }
@@ -71,15 +76,6 @@ class CardBackFragment : Fragment() {
             againButton.setOnClickListener {
                 StudyManager.getInstance().sendCurrentCardToBack()
                 goToNextFront(0)
-            }
-            if (card.backImage != null) {
-                backImageView.setImageURI(Uri.fromFile(File(card.backImage)))
-            } else {
-                backCardLayout.removeView(backImageView)
-                cardBackText.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    bottomToTop = ConstraintLayout.LayoutParams.UNSET
-                    bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-                }
             }
         }
     }

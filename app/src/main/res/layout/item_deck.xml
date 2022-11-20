@@ -3,43 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_deck_layout"
-    android:layout_width="168dp"
-    android:layout_height="168dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/shape_round"
-    android:minWidth="168dp"
-    android:minHeight="168dp"
-    android:foreground="?android:attr/selectableItemBackground">
-
-    <TextView
-        android:id="@+id/deck_name"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="3"
-        android:text="@string/placeholder_deck_name"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_wrapBehaviorInParent="included" />
+    android:foreground="?android:attr/selectableItemBackground" >
 
     <ImageView
         android:id="@+id/card_view_button"
         style="@style/Widget.AppCompat.ActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:contentDescription="@string/card_view_button_description"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_view_list_24" />
 
     <ImageView
@@ -53,5 +31,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+    <TextView
+        android:id="@+id/deck_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="3"
+        android:text="@string/placeholder_deck_name"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/card_view_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deck_edit_button"
+        app:layout_wrapBehaviorInParent="included" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

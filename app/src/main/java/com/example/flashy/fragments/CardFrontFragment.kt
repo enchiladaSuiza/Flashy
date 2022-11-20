@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -72,26 +73,20 @@ class CardFrontFragment : Fragment() {
     private fun bindForStudy(card: Card) {
         binding.apply {
             remainingCardsFront.text = StudyManager.getInstance().remainingCards().toString()
-            if (card.frontContent.isBlank()) {
-                frontCardLayout.removeView(cardFrontText)
-                frontImageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    topToBottom = ConstraintLayout.LayoutParams.UNSET
-                    topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-                    topMargin = 32
-                }
-            } else {
-                cardFrontText.text = card.frontContent
-            }
-            binding.turnOverButton.setOnClickListener { goToCardBack() }
             if (card.frontImage != null) {
                 frontImageView.setImageURI(Uri.fromFile(File(card.frontImage)))
             } else {
                 frontCardLayout.removeView(frontImageView)
-                cardFrontText.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    bottomToTop = ConstraintLayout.LayoutParams.UNSET
-                    bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+                cardFrontText.updateLayoutParams<LinearLayout.LayoutParams> {
+                    bottomMargin = 0
                 }
             }
+            if (card.frontContent.isBlank()) {
+                frontCardLayout.removeView(cardFrontText)
+            } else {
+                cardFrontText.text = card.frontContent
+            }
+            binding.turnOverButton.setOnClickListener { goToCardBack() }
         }
     }
 
