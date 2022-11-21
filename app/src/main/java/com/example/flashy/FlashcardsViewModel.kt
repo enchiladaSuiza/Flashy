@@ -97,13 +97,17 @@ class FlashcardsViewModel(
         deckId: Int,
         fImage: String? = null,
         bImage: String? = null,
+        fAudio: String? = null,
+        bAudio: String? = null
     ): Card {
         return Card(
             frontContent = front,
             backContent = back,
             deck = deckId,
             frontImage = fImage,
-            backImage = bImage
+            backImage = bImage,
+            frontAudio = fAudio,
+            backAudio = bAudio
         )
     }
 
@@ -112,8 +116,11 @@ class FlashcardsViewModel(
         back: String,
         deckId: Int,
         fImage: String? = null,
-        bImage: String? = null) {
-        val card = getNewCardEntry(front, back, deckId, fImage, bImage)
+        bImage: String? = null,
+        fAudio: String? = null,
+        bAudio: String? = null) {
+        val card = getNewCardEntry(
+            front, back, deckId, fImage, bImage, fAudio, bAudio)
         insertCard(card)
     }
 
@@ -123,14 +130,18 @@ class FlashcardsViewModel(
         back: String,
         deckId: Int,
         fImage: String? = null,
-        bImage: String? = null): Card {
+        bImage: String? = null,
+        fAudio: String? = null,
+        bAudio: String? = null): Card {
         return Card(
             id = cardId,
             frontContent = front,
             backContent = back,
             deck = deckId,
             frontImage = fImage,
-            backImage = bImage)
+            backImage = bImage,
+            frontAudio = fAudio,
+            backAudio = bAudio)
     }
 
     fun updateExistingCard(
@@ -139,9 +150,12 @@ class FlashcardsViewModel(
         back: String,
         deckId: Int,
         fImage: String? = null,
-        bImage: String? = null
+        bImage: String? = null,
+        fAudio: String? = null,
+        bAudio: String? = null
     ) {
-        val updatedCard = getUpdatedCardEntry(cardId, front, back, deckId, fImage, bImage)
+        val updatedCard = getUpdatedCardEntry(
+            cardId, front, back, deckId, fImage, bImage, fAudio, bAudio)
         updateCard(updatedCard)
     }
 

@@ -20,7 +20,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="28dp">
 
             <EditText
                 android:id="@+id/front_content"
@@ -93,6 +94,58 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_front_image_capture" />
 
+            <ImageView
+                android:id="@+id/card_front_record_audio"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/record_audio"
+                android:src="@drawable/ic_baseline_mic_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_front_pick_audio"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_front_image" />
+
+            <ImageView
+                android:id="@+id/card_front_pick_audio"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/pick_audio"
+                android:src="@drawable/ic_baseline_audio_file_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_front_audio_remove"
+                app:layout_constraintStart_toEndOf="@+id/card_front_record_audio"
+                app:layout_constraintTop_toBottomOf="@+id/card_front_image" />
+
+            <ImageView
+                android:id="@+id/card_front_audio_remove"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="44dp"
+                android:contentDescription="@string/remove_front_audio"
+                android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/card_front_pick_audio"
+                app:layout_constraintTop_toBottomOf="@+id/card_front_image" />
+
+            <ImageView
+                android:id="@+id/play_front_audio"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/play_front_audio"
+                android:src="@drawable/ic_baseline_play_circle_48"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_front_record_audio" />
+
             <EditText
                 android:id="@+id/back_content"
                 android:layout_width="0dp"
@@ -108,7 +161,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_front_image" />
+                app:layout_constraintTop_toBottomOf="@+id/play_front_audio" />
 
             <ImageView
                 android:id="@+id/card_back_image_capture"
@@ -156,15 +209,65 @@
                 android:layout_marginStart="44dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="44dp"
-                android:layout_marginBottom="14dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/back_image"
                 android:maxWidth="256dp"
                 android:maxHeight="256dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_back_image_capture" />
+
+            <ImageView
+                android:id="@+id/card_back_record_audio"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/record_audio"
+                android:src="@drawable/ic_baseline_mic_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_back_pick_audio"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_back_image" />
+
+            <ImageView
+                android:id="@+id/card_back_audio_remove"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="44dp"
+                android:contentDescription="@string/remove_back_audio"
+                android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/card_back_pick_audio"
+                app:layout_constraintTop_toBottomOf="@+id/card_back_image" />
+
+            <ImageView
+                android:id="@+id/card_back_pick_audio"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/pick_audio"
+                android:src="@drawable/ic_baseline_audio_file_24"
+                app:layout_constraintEnd_toStartOf="@+id/card_back_audio_remove"
+                app:layout_constraintStart_toEndOf="@+id/card_back_record_audio"
+                app:layout_constraintTop_toBottomOf="@+id/card_back_image" />
+
+            <ImageView
+                android:id="@+id/play_back_audio"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/play_back_audio"
+                android:src="@drawable/ic_baseline_play_circle_48"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_back_record_audio" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

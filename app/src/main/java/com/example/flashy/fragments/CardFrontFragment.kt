@@ -1,30 +1,28 @@
 package com.example.flashy.fragments
 
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.flashy.*
 import com.example.flashy.database.Card
 import com.example.flashy.databinding.FragmentCardFrontBinding
-import com.example.flashy.databinding.FragmentCardsBinding
 import java.io.File
+import java.io.IOException
 
 class CardFrontFragment : Fragment() {
     private var _binding: FragmentCardFrontBinding? = null
     private val binding get() = _binding!!
+
+    private var playing: Boolean = true
+    private var player: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,18 +71,23 @@ class CardFrontFragment : Fragment() {
     private fun bindForStudy(card: Card) {
         binding.apply {
             remainingCardsFront.text = StudyManager.getInstance().remainingCards().toString()
-            if (card.frontImage != null) {
-                frontImageView.setImageURI(Uri.fromFile(File(card.frontImage)))
-            } else {
-                frontCardLayout.removeView(frontImageView)
-                cardFrontText.updateLayoutParams<LinearLayout.LayoutParams> {
-                    bottomMargin = 0
-                }
-            }
             if (card.frontContent.isBlank()) {
                 frontCardLayout.removeView(cardFrontText)
             } else {
                 cardFrontText.text = card.frontContent
+            }
+            if (card.frontImage != null) {
+                frontImageView.setImageURI(Uri.fromFile(File(card.frontImage)))
+            } else {
+                frontCardLayout.removeView(frontImageView)
+                /*cardFrontText.updateLayoutParams<LinearLayout.LayoutParams> {
+                    bottomMargin = 0
+                }*/
+            }
+            if (card.frontAudio != null) {
+                frontAudioPlay.setOnClickListener { onPlay(card.frontAudio) }
+            } else {
+                frontCardLayout.removeView(frontAudioPlay)
             }
             binding.turnOverButton.setOnClickListener { goToCardBack() }
         }
@@ -94,5 +97,44 @@ class CardFrontFragment : Fragment() {
         val action = CardFrontFragmentDirections
             .actionCardFrontFragmentToCardBackFragment()
         this.findNavController().navigate(action)
+    }
+
+    private fun onPlay(file: String) {
+        playing = if (playing) {
+            startPlaying(file)
+            false
+        } else {
+            stopPlaying()
+            true
+        }
+    }
+
+    private fun startPlaying(file: String) {
+        player = MediaPlayer().apply {
+            try {
+                setDataSource(file)
+                binding.frontAudioPlay
+                    .setImageResource(R.drawable.ic_baseline_stop_circle_48)
+                setOnCompletionListener {
+                    binding.frontAudioPlay
+                        .setImageResource(R.drawable.ic_baseline_play_circle_48)
+                }
+                prepare()
+                start()
+            } catch (e: IOException) {
+                Log.e("ioexception", e.toString())
+                Toast.makeText(
+                    requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun stopPlaying() {
+        player?.release()
+        player = null
+        binding.frontAudioPlay
+            .setImageResource(R.drawable.ic_baseline_play_circle_48)
+        binding.frontAudioPlay
+            .setImageResource(R.drawable.ic_baseline_play_circle_48)
     }
 }

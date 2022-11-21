@@ -49,4 +49,10 @@
     <string name="take_back_photo">Tomar imagen posterior</string>
     <string name="remove_front_image">Quitar imagen frontal</string>
     <string name="remove_back_image" />
+    <string name="remove_front_audio">Quitar audio frontal</string>
+    <string name="pick_audio">Elegir archivo de audio</string>
+    <string name="record_audio">Grabar audio</string>
+    <string name="play_front_audio">Reproducir audio frontal</string>
+    <string name="remove_back_audio">Quitar audio posterior</string>
+    <string name="play_back_audio">Reproducir audio posterior</string>
 </resources>

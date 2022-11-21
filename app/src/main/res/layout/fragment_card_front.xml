@@ -17,14 +17,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:maxHeight="500dp"
         app:layout_constraintBottom_toTopOf="@+id/turn_over_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -32,32 +29,62 @@
         app:layout_constraintTop_toBottomOf="@+id/remaining_cards_front"
         app:layout_constraintVertical_bias="0.5">
 
-        <LinearLayout
-            android:id="@+id/front_card_layout"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/shape_round"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:fillViewport="false"
+            android:maxHeight="600dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
-            <TextView
-                android:id="@+id/card_front_text"
+            <LinearLayout
+                android:id="@+id/front_card_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/shape_round"
                 android:gravity="center"
-                android:textAlignment="center"
-                android:textSize="20sp" />
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
-            <ImageView
-                android:id="@+id/front_image_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/front_image" />
-        </LinearLayout>
-    </ScrollView>
+                <TextView
+                    android:id="@+id/card_front_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/front_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/front_image" />
+
+                <ImageView
+                    android:id="@+id/front_audio_play"
+                    style="@style/Widget.AppCompat.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/play_front_audio"
+                    android:src="@drawable/ic_baseline_play_circle_48" />
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/turn_over_button"

@@ -4,7 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
+import android.net.rtp.AudioCodec.AMR
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -12,14 +16,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet.Constraint
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import androidx.core.net.toFile
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,6 +35,7 @@ import com.example.flashy.database.Card
 import com.example.flashy.databinding.FragmentCardEditBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
+import java.io.FileDescriptor
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -54,12 +58,24 @@ class CardEditFragment : Fragment() {
 
     private val cameraRQ = 1
     private val galleryRQ = 2
+    private val micRQ = 3
+    private val audioRQ = 4
 
     private var frontPhotoPath: String? = null
     private var backPhotoPath: String? = null
 
     private var usingImageView = 0 // 0 -> Front, 1 -> Back
-    /*private var cameraResultLauncher: ActivityResultLauncher<Intent>? = null*/
+
+    private var startRecording: Boolean = true
+    private var startPlaying: Boolean = true
+
+    private var recorder: MediaRecorder? = null
+    private var player: MediaPlayer? = null
+
+    private var frontAudioPath: String? = null
+    private var backAudioPath: String? = null
+
+    private var usingAudioSide = 0 // 0 -> Front, 1 -> Back
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,6 +100,71 @@ class CardEditFragment : Fragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == cameraRQ) {
+                try {
+                    if (usingImageView == 0 && frontPhotoPath != null) {
+                        binding.cardFrontImage.setImageURI(Uri.fromFile(File(frontPhotoPath)))
+                    }
+                    else if (usingImageView == 1 && backPhotoPath != null) {
+                        binding.cardBackImage.setImageURI(Uri.fromFile(File(backPhotoPath)))
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+                    Log.e("debug", e.message.toString())
+                }
+            }
+            else if (requestCode == galleryRQ) {
+                try {
+                    if (usingImageView == 0) {
+                        frontPhotoPath = getPath(data?.data!!, 0)
+                        binding.cardFrontImage.setImageURI(data.data)
+                    }
+                    else if (usingImageView == 1) {
+                        backPhotoPath = getPath(data?.data!!, 0)
+                        binding.cardBackImage.setImageURI(data.data)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+                    Log.e("debug", e.message.toString())
+                }
+            }
+            else if (requestCode == audioRQ) {
+                try {
+                    if (usingAudioSide == 0) {
+                        frontAudioPath = getPath(data?.data!!, 1)
+                        binding.playFrontAudio.visibility = View.VISIBLE
+                    }
+                    else if (usingAudioSide == 1) {
+                        backAudioPath = getPath(data?.data!!, 1)
+                        binding.playBackAudio.visibility = View.VISIBLE
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+                    Log.e("debug", e.message.toString())
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        recorder?.release()
+        recorder = null
+        player?.release()
+        player = null
+    }
+
     private fun bindOnEdit(card: Card) {
         binding.apply {
             frontContent.setText(card.frontContent, TextView.BufferType.SPANNABLE)
@@ -102,6 +183,15 @@ class CardEditFragment : Fragment() {
             if (card.backImage != null) {
                 backPhotoPath = card.backImage
                 cardBackImage.setImageURI(Uri.fromFile(File(card.backImage)))
+            }
+
+            if (card.frontAudio != null) {
+                frontAudioPath = card.frontAudio
+                playFrontAudio.visibility = View.VISIBLE
+            }
+            if (card.backAudio != null) {
+                backAudioPath = card.backAudio
+                playBackAudio.visibility = View.VISIBLE
             }
         }
         bindImages()
@@ -144,7 +234,52 @@ class CardEditFragment : Fragment() {
             }
             cardFrontImageRemove.setOnClickListener { removeFrontImage() }
             cardBackImageRemove.setOnClickListener { removeBackImage() }
+
+            if (requireContext().packageManager
+                    .hasSystemFeature(PackageManager.FEATURE_MICROPHONE)) {
+                cardFrontRecordAudio.setOnClickListener {
+                    usingAudioSide = 0
+                    onRecord()
+                }
+                cardBackRecordAudio.setOnClickListener {
+                    usingAudioSide = 1
+                    onRecord()
+                }
+            }
+            cardFrontPickAudio.setOnClickListener {
+                usingAudioSide = 0
+                openDocuments()
+            }
+            cardBackPickAudio.setOnClickListener {
+                usingAudioSide = 1
+                openDocuments()
+            }
+            playFrontAudio.setOnClickListener {
+                usingAudioSide = 0
+                onPlay()
+            }
+            playBackAudio.setOnClickListener {
+                usingAudioSide = 1
+                onPlay()
+            }
+            cardFrontAudioRemove.setOnClickListener { removeFrontAudio() }
+            cardBackAudioRemove.setOnClickListener { removeBackAudio() }
         }
+    }
+
+    private fun showConfirmationDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.confirmation))
+            .setMessage(getString(R.string.delete_card_confirmation_text))
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                deleteCard()
+            }
+            .show()
+    }
+
+    private fun returnToCardsFragment() {
+        this.findNavController().navigateUp()
     }
 
     private fun isEntryValid(): Boolean {
@@ -161,7 +296,9 @@ class CardEditFragment : Fragment() {
                 binding.backContent.text.toString(),
                 navigationArgs.deckId,
                 frontPhotoPath,
-                backPhotoPath
+                backPhotoPath,
+                frontAudioPath,
+                backAudioPath
             )
         /*}*/
     }
@@ -174,7 +311,9 @@ class CardEditFragment : Fragment() {
                 binding.backContent.text.toString(),
                 card.deck,
                 frontPhotoPath,
-                backPhotoPath
+                backPhotoPath,
+                frontAudioPath,
+                backAudioPath
             )
         /*}*/
     }
@@ -184,11 +323,10 @@ class CardEditFragment : Fragment() {
         findNavController().navigateUp()
     }
 
-    private fun getPermission(): Boolean {
+    private fun getStoragePermission(): Boolean {
         val permission = ActivityCompat.checkSelfPermission(
             requireActivity(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(),
@@ -198,8 +336,36 @@ class CardEditFragment : Fragment() {
         return permission == PackageManager.PERMISSION_GRANTED
     }
 
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+            .format(Date())
+        val storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("Flashy_${timeStamp}_", ".jpg", storageDir)
+    }
+
+    // type = 0 -> Image, type = 1 -> Audio
+    private fun getPath(uri: Uri, type: Int): String? {
+        var result: String? = null
+        val proj = if (type == 0) {
+            arrayOf(MediaStore.Images.Media.DATA)
+        } else {
+            arrayOf(MediaStore.Audio.Media.DATA)
+        }
+        val cursor = requireContext()
+            .contentResolver.query(uri, proj, null, null, null)
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                val columnIndex = cursor.getColumnIndex(proj[0])
+                result = cursor.getString(columnIndex)
+            }
+            cursor.close()
+        }
+        return result
+    }
+
     private fun openCamera() {
-        if (!getPermission()) return
+        if (!getStoragePermission()) return
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
                 val photoFile: File? = try {
@@ -225,70 +391,18 @@ class CardEditFragment : Fragment() {
         }
     }
 
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-            .format(Date())
-        val storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile("Flashy_${timeStamp}_", ".jpg", storageDir)
-    }
-
     private fun openGallery() {
-        if (!getPermission()) return
+        if (!getStoragePermission()) return
         val intent = Intent(
             Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, galleryRQ)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == cameraRQ) {
-                try {
-                    if (usingImageView == 0 && frontPhotoPath != null) {
-                        binding.cardFrontImage.setImageURI(Uri.fromFile(File(frontPhotoPath)))
-                    }
-                    else if (usingImageView == 1 && backPhotoPath != null) {
-                        binding.cardBackImage.setImageURI(Uri.fromFile(File(backPhotoPath)))
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
-                    Log.e("debug", e.message.toString())
-                }
-            }
-            else if (requestCode == galleryRQ) {
-                try {
-                    if (usingImageView == 0) {
-                        frontPhotoPath = getPath(data?.data!!)
-                        binding.cardFrontImage.setImageURI(data.data)
-                    }
-                    else if (usingImageView == 1) {
-                        backPhotoPath = getPath(data?.data!!)
-                        binding.cardBackImage.setImageURI(data.data)
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
-                    Log.e("debug", e.message.toString())
-                }
-            }
-        }
-    }
-
-    private fun getPath(uri: Uri): String? {
-        var result: String? = null
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = requireContext()
-            .contentResolver.query(uri, proj, null, null, null)
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                val columnIndex = cursor.getColumnIndex(proj[0])
-                result = cursor.getString(columnIndex)
-            }
-            cursor.close()
-        }
-        return result
+    private fun openDocuments() {
+        if (!getStoragePermission()) return
+        val intent = Intent(
+            Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, audioRQ)
     }
 
     private fun removeFrontImage() {
@@ -301,23 +415,159 @@ class CardEditFragment : Fragment() {
         binding.cardBackImage.setImageDrawable(null)
     }
 
-    private fun showConfirmationDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.confirmation))
-            .setMessage(getString(R.string.delete_card_confirmation_text))
-            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
-            .setPositiveButton(getString(R.string.delete)) { _, _ ->
-                deleteCard()
+    private fun getMicPermission(): Boolean {
+        val permission = ActivityCompat.checkSelfPermission(
+            requireActivity(),
+            Manifest.permission.RECORD_AUDIO)
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(Manifest.permission.RECORD_AUDIO), micRQ)
+        }
+
+        return permission == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun createAudioFile(): String {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+            .format(Date())
+        val storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_DCIM)
+        return storageDir?.absolutePath + timeStamp + ".3gp"
+    }
+
+    private fun onRecord() {
+        startRecording = if (startRecording) {
+            startRecording()
+            false
+        } else {
+            stopRecording()
+            true
+        }
+    }
+
+    private fun startRecording() {
+        recorder = MediaRecorder().apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            if (usingAudioSide == 0) {
+                frontAudioPath = createAudioFile()
+                setOutputFile(frontAudioPath)
+                binding.cardFrontRecordAudio
+                    .setImageResource(R.drawable.ic_baseline_stop_24)
+            } else {
+                backAudioPath = createAudioFile()
+                setOutputFile(backAudioPath)
+                binding.cardBackRecordAudio
+                    .setImageResource(R.drawable.ic_baseline_stop_24)
             }
-            .show()
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+            try {
+                prepare()
+            } catch (e: IOException) {
+                Log.e("ioexception", e.toString())
+                Toast.makeText(
+                    requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+            }
+            start()
+        }
     }
 
-    private fun returnToCardsFragment() {
-        this.findNavController().navigateUp()
+    private fun stopRecording() {
+        if (!getMicPermission()) return
+        recorder?.apply {
+            stop()
+            release()
+        }
+        recorder = null
+        if (usingAudioSide == 0) {
+            binding.cardFrontRecordAudio
+                .setImageResource(R.drawable.ic_baseline_mic_24)
+            binding.playFrontAudio.visibility = View.VISIBLE
+            binding.playFrontAudio
+                .setImageResource(R.drawable.ic_baseline_play_circle_48)
+        } else {
+            binding.cardBackRecordAudio
+                .setImageResource(R.drawable.ic_baseline_mic_24)
+            binding.playBackAudio.visibility = View.VISIBLE
+            binding.playBackAudio
+                .setImageResource(R.drawable.ic_baseline_play_circle_48)
+        }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun onPlay() {
+        startPlaying = if (startPlaying) {
+            startPlaying()
+            false
+        } else {
+            stopPlaying()
+            // pausePlaying()
+            true
+        }
+    }
+
+    private fun startPlaying() {
+        player = MediaPlayer().apply {
+            try {
+                if (usingAudioSide == 0) {
+                    setDataSource(frontAudioPath)
+                    binding.playFrontAudio
+                        .setImageResource(R.drawable.ic_baseline_stop_circle_48)
+                    setOnCompletionListener {
+                        binding.playFrontAudio
+                            .setImageResource(R.drawable.ic_baseline_play_circle_48)
+                    }
+                }
+                else {
+                    setDataSource(backAudioPath)
+                    binding.playBackAudio
+                        .setImageResource(R.drawable.ic_baseline_stop_circle_48)
+                    setOnCompletionListener {
+                        binding.playBackAudio
+                            .setImageResource(R.drawable.ic_baseline_play_circle_48)
+                    }
+                }
+
+                prepare()
+                start()
+            } catch (e: IOException) {
+                Log.e("ioexception", e.toString())
+                Toast.makeText(
+                    requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun pausePlaying() {
+        player?.pause()
+        if (usingAudioSide == 0) {
+            binding.playFrontAudio
+                .setImageResource(R.drawable.ic_baseline_play_circle_48)
+        } else {
+            binding.playBackAudio
+                .setImageResource(R.drawable.ic_baseline_play_circle_48)
+        }
+    }
+
+    private fun stopPlaying() {
+        player?.release()
+        player = null
+        if (usingAudioSide == 0) {
+            binding.playFrontAudio
+                .setImageResource(R.drawable.ic_baseline_play_circle_48)
+        } else {
+            binding.playBackAudio
+                .setImageResource(R.drawable.ic_baseline_play_circle_48)
+        }
+    }
+
+    private fun removeFrontAudio() {
+        binding.playFrontAudio.visibility = View.GONE
+        frontAudioPath = null
+    }
+
+    private fun removeBackAudio() {
+        binding.playBackAudio.visibility = View.GONE
+        backAudioPath = null
     }
 }

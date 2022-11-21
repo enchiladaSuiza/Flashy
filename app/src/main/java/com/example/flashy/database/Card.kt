@@ -17,11 +17,17 @@ data class Card(
     @ColumnInfo(name = "front_image")
     val frontImage: String?,
 
+    @ColumnInfo(name = "front_audio")
+    val frontAudio: String?,
+
     @ColumnInfo(name = "back_content")
     val backContent: String,
 
     @ColumnInfo(name = "back_image")
     val backImage: String?,
+
+    @ColumnInfo(name = "back_audio")
+    val backAudio: String?,
 
     @ColumnInfo(name = "deck", index = true)
     val deck: Int
