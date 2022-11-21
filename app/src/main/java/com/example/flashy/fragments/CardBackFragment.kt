@@ -47,6 +47,12 @@ class CardBackFragment : Fragment() {
         bindForStudy(StudyManager.getInstance().currentCard())
     }
 
+    override fun onStop() {
+        super.onStop()
+        player?.release()
+        player = null
+    }
+
     private fun goToNextFront(currentRating: Int) {
         if (StudyManager.getInstance().index() ==
             StudyManager.getInstance().size() - 1) {

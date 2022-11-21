@@ -61,6 +61,12 @@ class CardFrontFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        player?.release()
+        player = null
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

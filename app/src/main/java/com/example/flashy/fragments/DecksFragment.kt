@@ -45,13 +45,14 @@ class DecksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val adapter = DeckListAdapter (requireContext(), {
             val action = DecksFragmentDirections
-                .actionDecksFragmentToCardsFragment(it.id)
+                .actionDecksFragmentToCardsFragment(deckId = it.id, deckName = it.name)
             this.findNavController().navigate(action)
         }, {
             showDeckOptionsDialog(it)
         }, {
             StudyManager.getInstance().prepareCards(this.viewLifecycleOwner, viewModel, it.id)
-            val action = DecksFragmentDirections.actionDecksFragmentToStudyActivity(it.name)
+            val action = DecksFragmentDirections
+                .actionDecksFragmentToStudyActivity(it.name)
             this.findNavController().navigate(action)
         })
         binding.recyclerView.adapter = adapter

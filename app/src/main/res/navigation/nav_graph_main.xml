@@ -40,6 +40,10 @@
         <action
             android:id="@+id/action_cardsFragment_to_studyActivity"
             app:destination="@id/studyActivity" />
+        <argument
+            android:name="deckName"
+            app:argType="string"
+            android:defaultValue="Vista Previa" />
     </fragment>
     <fragment
         android:id="@+id/cardEditFragment"
