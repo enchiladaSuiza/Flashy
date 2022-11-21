@@ -19,7 +19,7 @@ class StudyManager private constructor() {
     private var cardId = 0
 
     private var observeDeck: Observer<List<Card>> = Observer { list ->
-        cards = list
+        cards = list.shuffled()
     }
 
     private var observeCard: Observer<Card> = Observer { card ->

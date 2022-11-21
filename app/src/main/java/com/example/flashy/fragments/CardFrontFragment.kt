@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.flashy.*
@@ -37,9 +38,6 @@ class CardFrontFragment : Fragment() {
             }
         }
         callback.isEnabled = true
-
-        /*(requireActivity() as AppCompatActivity).supportActionBar?.title =
-            requireActivity().intent?.extras?.let { StudyActivityArgs.fromBundle(it).title }*/
     }
 
     override fun onCreateView(
@@ -70,7 +68,12 @@ class CardFrontFragment : Fragment() {
 
     private fun bindForStudy(card: Card) {
         binding.apply {
-            remainingCardsFront.text = StudyManager.getInstance().remainingCards().toString()
+            val bundle = requireActivity().intent?.extras
+            if (bundle != null) {
+                val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+                actionBar?.title = StudyActivityArgs.fromBundle(bundle).title + " (" +
+                        StudyManager.getInstance().remainingCards().toString() + ")"
+            }
             if (card.frontContent.isBlank()) {
                 frontCardLayout.removeView(cardFrontText)
             } else {

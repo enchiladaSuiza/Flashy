@@ -32,9 +32,6 @@ class CardBackFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /*(requireActivity() as AppCompatActivity).supportActionBar?.title =
-            requireActivity().intent?.extras?.let { StudyActivityArgs.fromBundle(it).title }*/
     }
 
     override fun onCreateView(
@@ -65,7 +62,12 @@ class CardBackFragment : Fragment() {
 
     private fun bindForStudy(card: Card) {
         binding.apply {
-            remainingCardsBack.text = StudyManager.getInstance().remainingCards().toString()
+            val bundle = requireActivity().intent?.extras
+            if (bundle != null) {
+                val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
+                actionBar?.title = StudyActivityArgs.fromBundle(bundle).title + " (" +
+                        StudyManager.getInstance().remainingCards().toString() + ")"
+            }
             if (card.backContent.isBlank()) {
                 backCardLayout.removeView(cardBackText)
             } else {

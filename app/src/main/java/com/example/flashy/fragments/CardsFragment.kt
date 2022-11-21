@@ -45,10 +45,11 @@ class CardsFragment : Fragment() {
             this.findNavController().navigate(action)
         }, {
             StudyManager.getInstance().preparePreview(this.viewLifecycleOwner, viewModel, it.id)
-            val deckName = viewModel.retrieveDeck(it.deck).value?.name
-            val action = CardsFragmentDirections
-                .actionCardsFragmentToStudyActivity("Vista previa")
-            this.findNavController().navigate(action)
+            viewModel.retrieveDeck(it.deck).observe(this.viewLifecycleOwner) { deck ->
+                val action = CardsFragmentDirections
+                    .actionCardsFragmentToStudyActivity(deck.name)
+                this.findNavController().navigate(action)
+            }
         })
         binding.recyclerView.adapter = adapter
 
