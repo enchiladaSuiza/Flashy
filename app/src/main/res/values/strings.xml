@@ -16,6 +16,7 @@
     <string name="create_new_deck">Crear Nuevo Mazo</string>
     <string name="create_new_card">Crear Nueva Carta</string>
     <string name="create">Crear</string>
+    <string name="new_card">Nueva Carta</string>
     <string name="edit_card">Editar Carta</string>
     <string name="edit_deck">Editar Mazo</string>
     <string name="front_content">Contenido Frontal</string>

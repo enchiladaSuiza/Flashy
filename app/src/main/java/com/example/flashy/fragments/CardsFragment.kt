@@ -63,7 +63,7 @@ class CardsFragment : Fragment() {
         binding.cardsFab.setOnClickListener {
             val action = CardsFragmentDirections
                 .actionCardsFragmentToCardEditFragment(
-                    title = getString(R.string.create_new_card),
+                    title = getString(R.string.new_card),
                     deckId = deckId)
             this.findNavController().navigate(action)
         }

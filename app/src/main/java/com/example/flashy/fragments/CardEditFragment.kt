@@ -2,6 +2,7 @@ package com.example.flashy.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
@@ -16,11 +17,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.updateLayoutParams
@@ -279,6 +283,11 @@ class CardEditFragment : Fragment() {
     }
 
     private fun returnToCardsFragment() {
+        requireActivity().currentFocus?.let { view ->
+            val imm = requireActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
         this.findNavController().navigateUp()
     }
 
