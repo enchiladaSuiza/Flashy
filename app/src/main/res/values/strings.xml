@@ -56,4 +56,6 @@
     <string name="play_front_audio">Reproducir audio frontal</string>
     <string name="remove_back_audio">Quitar audio posterior</string>
     <string name="play_back_audio">Reproducir audio posterior</string>
+    <string name="srs">SRS</string>
+    <string name="free">Libre</string>
 </resources>

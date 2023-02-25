@@ -8,7 +8,6 @@ import com.example.flashy.database.Card
 import com.example.flashy.database.Deck
 
 class StudyManager private constructor() {
-
     private var index = 0
     private lateinit var cards: List<Card>
     private lateinit var againCards: MutableList<Card>

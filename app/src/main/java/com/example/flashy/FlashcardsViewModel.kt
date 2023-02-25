@@ -87,10 +87,6 @@ class FlashcardsViewModel(
         return cardDao.getCardsFromDeck(deckId).asLiveData()
     }
 
-    fun retrieveCardsFromDeckInTime(deckId: Int): List<Card> {
-        return retrieveCardsFromDeck(deckId).value!!
-    }
-
     private fun getNewCardEntry(
         front: String,
         back: String,

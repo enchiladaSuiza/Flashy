@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.flashy.ModeManager
 import com.example.flashy.database.Deck
 import com.example.flashy.databinding.ItemDeckBinding
 
@@ -25,12 +27,24 @@ class DeckListAdapter(
             binding.apply {
                 deckName.text = deck.name
                 itemDeckLayout.setOnClickListener { onStudyClicked(deck) }
-                itemDeckLayout.setOnLongClickListener {
-                    onDeckLongClicked(deck)
-                    true
+
+                when (ModeManager.getInstance().getMode()) {
+                    ModeManager.Mode.FREE -> {
+                        cardViewButton.setOnClickListener { onDeckClicked(deck) }
+                        deckEditButton.setOnClickListener { onDeckLongClicked(deck) }
+                        itemDeckLayout.setOnLongClickListener {
+                            onDeckLongClicked(deck)
+                            true
+                        }
+                    }
+                    ModeManager.Mode.SRS -> {
+                        cardViewButton.setImageBitmap(null)
+                        deckEditButton.setImageBitmap(null)
+                        cardViewButton.isEnabled = false
+                        deckEditButton.isEnabled = false
+                    }
                 }
-                cardViewButton.setOnClickListener { onDeckClicked(deck) }
-                deckEditButton.setOnClickListener { onDeckLongClicked(deck) }
+
             }
         }
     }

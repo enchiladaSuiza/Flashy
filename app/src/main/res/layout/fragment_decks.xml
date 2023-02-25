@@ -5,7 +5,7 @@
     android:id="@+id/item_card_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_200"
+    android:background="?attr/colorOnBackground"
     tools:context=".fragments.DecksFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -24,6 +24,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
+        android:focusable="true"
         android:contentDescription="@string/create_new_deck"
         android:src="@drawable/ic_baseline_add_24"
         app:layout_constraintBottom_toBottomOf="parent"

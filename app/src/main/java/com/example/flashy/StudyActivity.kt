@@ -19,19 +19,13 @@ class StudyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ModeManager.getInstance().setTheme(this)
 
         binding = ActivityStudyBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.materialToolbarStudy)
         supportActionBar?.title = navigationArgs.title
-
-        val navHost = supportFragmentManager
-            .findFragmentById(R.id.nav_host_study) as NavHostFragment
-        val navController = navHost.navController
-
-       /* appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

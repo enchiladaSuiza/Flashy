@@ -89,9 +89,6 @@ class CardFrontFragment : Fragment() {
                 frontImageView.setImageURI(Uri.fromFile(File(card.frontImage)))
             } else {
                 frontCardLayout.removeView(frontImageView)
-                /*cardFrontText.updateLayoutParams<LinearLayout.LayoutParams> {
-                    bottomMargin = 0
-                }*/
             }
             if (card.frontAudio != null) {
                 frontAudioPlay.setOnClickListener { onPlay(card.frontAudio) }
