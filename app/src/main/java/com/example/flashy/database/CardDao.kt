@@ -2,6 +2,7 @@ package com.example.flashy.database
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface CardDao {
@@ -35,12 +36,20 @@ interface CardDao {
     @Query("SELECT back_audio FROM card WHERE card.id = :id")
     fun getBackAudio(id: Int): Flow<String>
 
-    @Query("SELECT * FROM card WHERE card.deck = :deckId")
+    @Query("SELECT * FROM card WHERE card.deck = :deckId ORDER BY front_content ASC")
     fun getCardsFromDeck(deckId: Int): Flow<List<Card>>
 
     @Query("SELECT id FROM card WHERE deck = :deckId")
     fun getCardIdsFromDeck(deckId: Int): Flow<List<Int>>
 
+    @Query("SELECT * FROM card WHERE card.deck = :deckId AND card.due_date <= :dueDate")
+    fun getCardsFromDeckDue(deckId: Int, dueDate: String): Flow<List<Card>>
+
     @Query("DELETE FROM card WHERE card.deck = :deckId")
     suspend fun deleteCardsFromDeck(deckId: Int)
+    @Query("SELECT interval FROM card WHERE card.id = :id")
+    fun getInterval(id: Int): Float
+
+    @Query("SELECT due_date FROM card WHERE card.id = :id")
+    fun getDueDate(id: Int): String
 }

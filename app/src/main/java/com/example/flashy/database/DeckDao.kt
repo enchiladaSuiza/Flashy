@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface DeckDao {
@@ -33,4 +34,7 @@ interface DeckDao {
 
     @Query("SELECT * FROM deck JOIN card ON card.deck = deck.id")
     fun getDecksWithCards(): Map<Deck, List<Card>>
+
+    @Query("SELECT DISTINCT deck.* FROM deck, card ON deck.id = card.deck WHERE card.due_date <= :date")
+    fun getAllDecksForDay(date: String): Flow<List<Deck>>
 }

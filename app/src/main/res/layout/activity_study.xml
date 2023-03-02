@@ -8,14 +8,15 @@
     android:orientation="vertical"
     tools:context=".StudyActivity">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/material_toolbar_study"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/theme"
-        app:titleTextColor="?attr/colorOnPrimary" />
+<!--    <com.google.android.material.appbar.MaterialToolbar-->
+<!--        android:id="@+id/material_toolbar_study"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="?attr/colorPrimary"-->
+<!--        android:minHeight="?attr/actionBarSize"-->
+<!--        android:theme="?attr/theme"-->
+<!--        app:titleTextColor="?attr/colorOnPrimary"-->
+<!--        app:subtitleTextColor="?attr/colorOnPrimary" />-->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_study"

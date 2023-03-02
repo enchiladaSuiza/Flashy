@@ -8,8 +8,6 @@ import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
-import android.net.rtp.AudioCodec.AMR
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -17,16 +15,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -39,7 +34,6 @@ import com.example.flashy.database.Card
 import com.example.flashy.databinding.FragmentCardEditBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
-import java.io.FileDescriptor
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -79,6 +73,9 @@ class CardEditFragment : Fragment() {
     private var frontAudioPath: String? = null
     private var backAudioPath: String? = null
 
+    private var interval: Float = 0f
+    private var dueDate: String = ""
+
     private var usingAudioSide = 0 // 0 -> Front, 1 -> Back
 
     override fun onCreateView(
@@ -102,55 +99,56 @@ class CardEditFragment : Fragment() {
         else { // LLegamos de "Crear Carta".
             bindOnCreate()
         }
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        dueDate = format.format(Date())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == cameraRQ) {
-                try {
-                    if (usingImageView == 0 && frontPhotoPath != null) {
-                        binding.cardFrontImage.setImageURI(Uri.fromFile(File(frontPhotoPath)))
+            when (requestCode) {
+                cameraRQ -> {
+                    try {
+                        if (usingImageView == 0 && frontPhotoPath != null) {
+                            binding.cardFrontImage.setImageURI(Uri.fromFile(File(frontPhotoPath)))
+                        } else if (usingImageView == 1 && backPhotoPath != null) {
+                            binding.cardBackImage.setImageURI(Uri.fromFile(File(backPhotoPath)))
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+                        Log.e("debug", e.message.toString())
                     }
-                    else if (usingImageView == 1 && backPhotoPath != null) {
-                        binding.cardBackImage.setImageURI(Uri.fromFile(File(backPhotoPath)))
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
-                    Log.e("debug", e.message.toString())
                 }
-            }
-            else if (requestCode == galleryRQ) {
-                try {
-                    if (usingImageView == 0) {
-                        frontPhotoPath = getPath(data?.data!!, 0)
-                        binding.cardFrontImage.setImageURI(data.data)
+                galleryRQ -> {
+                    try {
+                        if (usingImageView == 0) {
+                            frontPhotoPath = getPath(data?.data!!, 0)
+                            binding.cardFrontImage.setImageURI(data.data)
+                        } else if (usingImageView == 1) {
+                            backPhotoPath = getPath(data?.data!!, 0)
+                            binding.cardBackImage.setImageURI(data.data)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+                        Log.e("debug", e.message.toString())
                     }
-                    else if (usingImageView == 1) {
-                        backPhotoPath = getPath(data?.data!!, 0)
-                        binding.cardBackImage.setImageURI(data.data)
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
-                    Log.e("debug", e.message.toString())
                 }
-            }
-            else if (requestCode == audioRQ) {
-                try {
-                    if (usingAudioSide == 0) {
-                        frontAudioPath = getPath(data?.data!!, 1)
-                        binding.playFrontAudio.visibility = View.VISIBLE
+                audioRQ -> {
+                    try {
+                        if (usingAudioSide == 0) {
+                            frontAudioPath = getPath(data?.data!!, 1)
+                            binding.playFrontAudio.visibility = View.VISIBLE
+                        } else if (usingAudioSide == 1) {
+                            backAudioPath = getPath(data?.data!!, 1)
+                            binding.playBackAudio.visibility = View.VISIBLE
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+                        Log.e("debug", e.message.toString())
                     }
-                    else if (usingAudioSide == 1) {
-                        backAudioPath = getPath(data?.data!!, 1)
-                        binding.playBackAudio.visibility = View.VISIBLE
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
-                    Log.e("debug", e.message.toString())
                 }
             }
         }
@@ -197,6 +195,10 @@ class CardEditFragment : Fragment() {
                 backAudioPath = card.backAudio
                 playBackAudio.visibility = View.VISIBLE
             }
+            dueDate = card.dueDate
+            interval = card.interval
+            cardDueDate.text = card.dueDate
+            cardInterval.text = card.interval.toString()
         }
         bindImages()
     }
@@ -211,6 +213,8 @@ class CardEditFragment : Fragment() {
             saveCardButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 startToStart = ConstraintLayout.LayoutParams.PARENT_ID
             }
+            cardDueDate.text = dueDate
+            cardInterval.text = interval.toString()
         }
         bindImages()
     }
@@ -291,40 +295,33 @@ class CardEditFragment : Fragment() {
         this.findNavController().navigateUp()
     }
 
-    private fun isEntryValid(): Boolean {
-        return viewModel.isEntryValid(
+    private fun addNewCard() {
+        viewModel.addNewCard(
             binding.frontContent.text.toString(),
-            binding.backContent.text.toString()
+            binding.backContent.text.toString(),
+            navigationArgs.deckId,
+            interval,
+            dueDate,
+            frontPhotoPath,
+            backPhotoPath,
+            frontAudioPath,
+            backAudioPath
         )
     }
 
-    private fun addNewCard() {
-        /*if (isEntryValid()) {*/
-            viewModel.addNewCard(
-                binding.frontContent.text.toString(),
-                binding.backContent.text.toString(),
-                navigationArgs.deckId,
-                frontPhotoPath,
-                backPhotoPath,
-                frontAudioPath,
-                backAudioPath
-            )
-        /*}*/
-    }
-
     private fun updateCard() {
-        /*if (isEntryValid()) {*/
-            viewModel.updateExistingCard(
-                card.id,
-                binding.frontContent.text.toString(),
-                binding.backContent.text.toString(),
-                card.deck,
-                frontPhotoPath,
-                backPhotoPath,
-                frontAudioPath,
-                backAudioPath
-            )
-        /*}*/
+        viewModel.updateExistingCard(
+            card.id,
+            binding.frontContent.text.toString(),
+            binding.backContent.text.toString(),
+            card.deck,
+            interval,
+            dueDate,
+            frontPhotoPath,
+            backPhotoPath,
+            frontAudioPath,
+            backAudioPath
+        )
     }
 
     private fun deleteCard() {

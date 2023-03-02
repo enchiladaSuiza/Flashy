@@ -7,6 +7,7 @@ import com.example.flashy.database.CardDao
 import com.example.flashy.database.Deck
 import com.example.flashy.database.DeckDao
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class FlashcardsViewModel(
     private val deckDao: DeckDao,
@@ -16,6 +17,10 @@ class FlashcardsViewModel(
 
     fun retrieveDeck(id: Int): LiveData<Deck> {
         return deckDao.getDeck(id).asLiveData()
+    }
+
+    fun retrieveDecksForDay(date: String): LiveData<List<Deck>> {
+        return deckDao.getAllDecksForDay(date).asLiveData()
     }
 
     private fun insertDeck(deck: Deck) {
@@ -87,10 +92,16 @@ class FlashcardsViewModel(
         return cardDao.getCardsFromDeck(deckId).asLiveData()
     }
 
+    fun retrieveCardsFromDeckDue(deckId: Int, dueDate: String): LiveData<List<Card>> {
+        return cardDao.getCardsFromDeckDue(deckId, dueDate).asLiveData()
+    }
+
     private fun getNewCardEntry(
         front: String,
         back: String,
         deckId: Int,
+        ivl: Float,
+        due: String,
         fImage: String? = null,
         bImage: String? = null,
         fAudio: String? = null,
@@ -103,7 +114,9 @@ class FlashcardsViewModel(
             frontImage = fImage,
             backImage = bImage,
             frontAudio = fAudio,
-            backAudio = bAudio
+            backAudio = bAudio,
+            interval = ivl,
+            dueDate = due
         )
     }
 
@@ -111,12 +124,15 @@ class FlashcardsViewModel(
         front: String,
         back: String,
         deckId: Int,
+        ivl: Float,
+        due: String,
         fImage: String? = null,
         bImage: String? = null,
         fAudio: String? = null,
-        bAudio: String? = null) {
+        bAudio: String? = null,
+        ) {
         val card = getNewCardEntry(
-            front, back, deckId, fImage, bImage, fAudio, bAudio)
+            front, back, deckId, ivl, due, fImage, bImage, fAudio, bAudio)
         insertCard(card)
     }
 
@@ -125,6 +141,8 @@ class FlashcardsViewModel(
         front: String,
         back: String,
         deckId: Int,
+        ivl: Float,
+        due: String,
         fImage: String? = null,
         bImage: String? = null,
         fAudio: String? = null,
@@ -137,7 +155,9 @@ class FlashcardsViewModel(
             frontImage = fImage,
             backImage = bImage,
             frontAudio = fAudio,
-            backAudio = bAudio)
+            backAudio = bAudio,
+            interval = ivl,
+            dueDate = due)
     }
 
     fun updateExistingCard(
@@ -145,25 +165,20 @@ class FlashcardsViewModel(
         front: String,
         back: String,
         deckId: Int,
+        ivl: Float,
+        due: String,
         fImage: String? = null,
         bImage: String? = null,
         fAudio: String? = null,
         bAudio: String? = null
     ) {
         val updatedCard = getUpdatedCardEntry(
-            cardId, front, back, deckId, fImage, bImage, fAudio, bAudio)
+            cardId, front, back, deckId, ivl, due, fImage, bImage, fAudio, bAudio)
         updateCard(updatedCard)
     }
 
     fun retrieveCardIdsFromDeck(deckId: Int): LiveData<List<Int>> {
         return cardDao.getCardIdsFromDeck(deckId).asLiveData()
-    }
-
-    fun isEntryValid(front: String, back: String): Boolean {
-        if (front.isBlank() || back.isBlank()) {
-            return false
-        }
-        return true
     }
 
     fun deleteCardsFromDeck(deck: Deck) {

@@ -43,8 +43,8 @@ class ModeManager private constructor() {
 
     fun setTheme(context: Context) {
         when (mode) {
-            Mode.FREE -> context.setTheme(R.style.Theme_Flashy_NoActionBar)
-            Mode.SRS -> context.setTheme(R.style.Theme_FlashyYellow_NoActionBar)
+            Mode.FREE -> context.setTheme(R.style.Theme_Flashy)
+            Mode.SRS -> context.setTheme(R.style.Theme_FlashyYellow)
         }
     }
 }

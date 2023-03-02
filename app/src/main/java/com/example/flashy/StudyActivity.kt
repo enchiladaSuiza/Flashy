@@ -24,7 +24,7 @@ class StudyActivity : AppCompatActivity() {
         binding = ActivityStudyBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.materialToolbarStudy)
+//        setSupportActionBar(binding.materialToolbarStudy)
         supportActionBar?.title = navigationArgs.title
     }
 

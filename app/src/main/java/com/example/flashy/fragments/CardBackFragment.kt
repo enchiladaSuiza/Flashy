@@ -54,6 +54,9 @@ class CardBackFragment : Fragment() {
     }
 
     private fun goToNextFront(currentRating: Int) {
+        if (ModeManager.getInstance().getMode() == ModeManager.Mode.SRS) {
+            StudyManager.getInstance().rateCard(currentRating)
+        }
         if (StudyManager.getInstance().index() ==
             StudyManager.getInstance().size() - 1) {
             StudyManager.getInstance().discard()
@@ -83,15 +86,13 @@ class CardBackFragment : Fragment() {
                 backImageView.setImageURI(Uri.fromFile(File(card.backImage)))
             } else {
                 backCardLayout.removeView(backImageView)
-                /*cardBackText.updateLayoutParams<LinearLayout.LayoutParams> {
-                    bottomMargin = 0
-                }*/
             }
             if (card.backAudio != null) {
                 backAudioPlay.setOnClickListener { onPlay(card.backAudio) }
             } else {
                 backCardLayout.removeView(backAudioPlay)
             }
+
             goodButton.setOnClickListener { goToNextFront(1) }
             againButton.setOnClickListener {
                 StudyManager.getInstance().sendCurrentCardToBack()

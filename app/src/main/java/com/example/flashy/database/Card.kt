@@ -2,9 +2,8 @@ package com.example.flashy.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.example.flashy.database.Deck
+import java.util.Date
 
 @Entity
 data class Card(
@@ -30,5 +29,11 @@ data class Card(
     val backAudio: String?,
 
     @ColumnInfo(name = "deck", index = true)
-    val deck: Int
+    val deck: Int,
+
+    @ColumnInfo(name = "interval")
+    val interval: Float,
+
+    @ColumnInfo(name = "due_date")
+    val dueDate: String
 )

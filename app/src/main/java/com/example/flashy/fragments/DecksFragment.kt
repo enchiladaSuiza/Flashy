@@ -15,6 +15,8 @@ import com.example.flashy.databinding.FragmentDecksBinding
 import com.example.flashy.recyclerview.DeckListAdapter
 import com.example.flashy.recyclerview.GridItemDecoration
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DecksFragment : Fragment() {
 
@@ -46,30 +48,40 @@ class DecksFragment : Fragment() {
         }, {
             showDeckOptionsDialog(it)
         }, {
-            StudyManager.getInstance().prepareCards(this.viewLifecycleOwner, viewModel, it.id)
+            if (ModeManager.getInstance().getMode() == ModeManager.Mode.FREE) {
+                StudyManager.getInstance().prepareCards(this.viewLifecycleOwner, viewModel, it.id)
+            }
+            else {
+                StudyManager.getInstance().prepareSRSCards(this.viewLifecycleOwner, viewModel, it.id)
+            }
             val action = DecksFragmentDirections
                 .actionDecksFragmentToStudyActivity(it.name)
             this.findNavController().navigate(action)
         })
 
         binding.recyclerView.adapter = adapter
-        viewModel.allDecks.observe(this.viewLifecycleOwner) { decks ->
-            decks.let {
-                adapter.submitList(it)
-            }
-        }
         binding.recyclerView.layoutManager = GridLayoutManager(this.context, 2)
         binding.recyclerView.addItemDecoration(GridItemDecoration(22))
 
-        when (ModeManager.getInstance().getMode()) {
-            ModeManager.Mode.FREE -> {
-                binding.decksFab.setOnClickListener {
-                    showDeckEditDialog()
+        if (ModeManager.getInstance().getMode() == ModeManager.Mode.FREE) {
+            viewModel.allDecks.observe(this.viewLifecycleOwner) { decks ->
+                decks.let {
+                    adapter.submitList(it)
                 }
             }
-            ModeManager.Mode.SRS -> {
-                binding.decksFab.isVisible = false
+            binding.decksFab.setOnClickListener {
+                showDeckEditDialog()
             }
+        }
+        else {
+            val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val today = format.format(Date())
+            viewModel.retrieveDecksForDay(today).observe(this.viewLifecycleOwner) { decks ->
+                decks.let {
+                    adapter.submitList(it)
+                }
+            }
+            binding.decksFab.isVisible = false
         }
 
         provider = object: MenuProvider {
