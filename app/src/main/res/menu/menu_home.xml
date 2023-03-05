@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/switch_modes"
-        android:title="@string/free"
-        app:showAsAction="ifRoom" />
+        android:title="@string/srs"
+        app:showAsAction="always"
+        app:actionLayout="@layout/action_mode_switcher" />
 </menu>

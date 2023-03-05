@@ -2,7 +2,9 @@ package com.example.flashy.fragments
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
+import android.widget.Button
+import android.widget.TextView
+import androidx.core.view.MenuItemCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -30,6 +32,8 @@ class DecksFragment : Fragment() {
     }
 
     private lateinit var provider: MenuProvider
+
+    private lateinit var format: SimpleDateFormat
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,8 +67,10 @@ class DecksFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(this.context, 2)
         binding.recyclerView.addItemDecoration(GridItemDecoration(22))
 
+        format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
         if (ModeManager.getInstance().getMode() == ModeManager.Mode.FREE) {
-            viewModel.allDecks.observe(this.viewLifecycleOwner) { decks ->
+            viewModel.allDecks.observe(viewLifecycleOwner) { decks ->
                 decks.let {
                     adapter.submitList(it)
                 }
@@ -74,9 +80,8 @@ class DecksFragment : Fragment() {
             }
         }
         else {
-            val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val today = format.format(Date())
-            viewModel.retrieveDecksForDay(today).observe(this.viewLifecycleOwner) { decks ->
+            viewModel.retrieveDecksForDay(today).observe(viewLifecycleOwner) { decks ->
                 decks.let {
                     adapter.submitList(it)
                 }
@@ -87,17 +92,18 @@ class DecksFragment : Fragment() {
         provider = object: MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_home, menu)
-                menu.getItem(0).title = ModeManager.getInstance().getModeString()
+                val switchItem = menu.findItem(R.id.switch_modes)
+                setupBadge(switchItem)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                ModeManager.getInstance().switchMode()
-                requireActivity().recreate()
+                switchMode()
                 return true
             }
         }
 
         requireActivity().addMenuProvider(provider)
+        // requireActivity().actionBar?.setIcon(R.mipmap.ic_launcher_foreground)
     }
 
     override fun onDestroyView() {
@@ -131,8 +137,10 @@ class DecksFragment : Fragment() {
     private fun showConfirmationDialog(deck: Deck) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.confirmation))
-            .setMessage(getString(R.string.delete_deck_confirmation_text) +
-                    '\n' + getString(R.string.all_cards_will_be_deleted))
+            .setMessage(
+                getString(R.string.delete_deck_confirmation_text) +
+                        '\n' + getString(R.string.all_cards_will_be_deleted)
+            )
             .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
             .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 deleteDeck(deck)
@@ -143,5 +151,38 @@ class DecksFragment : Fragment() {
     private fun deleteDeck(deck: Deck) {
         viewModel.deleteDeck(deck)
         viewModel.deleteCardsFromDeck(deck)
+    }
+
+    private fun switchMode() {
+        ModeManager.getInstance().switchMode()
+        requireActivity().recreate()
+    }
+
+    private fun setupBadge(item: MenuItem) {
+        item.title = ModeManager.getInstance().getNextModeString()
+        val button = item.actionView?.findViewById<Button>(R.id.mode_title)
+        button?.text = item.title
+        button?.setOnClickListener { switchMode() }
+
+        val badgeView = item.actionView?.findViewById<TextView>(R.id.mode_badge)
+
+        viewModel.retrieveDueDecksCount(format.format(Date())).observe(viewLifecycleOwner) {
+            if (it == 0) {
+                if (ModeManager.getInstance().getMode() == ModeManager.Mode.SRS) {
+                    switchMode()
+                }
+                badgeView?.visibility = View.INVISIBLE
+                button?.visibility = View.INVISIBLE
+            }
+            else {
+                if (ModeManager.getInstance().getMode() == ModeManager.Mode.SRS) {
+                    badgeView?.visibility = View.INVISIBLE
+                }
+                else {
+                    badgeView?.visibility = View.VISIBLE
+                    badgeView?.text = it.toString()
+                }
+            }
+        }
     }
 }

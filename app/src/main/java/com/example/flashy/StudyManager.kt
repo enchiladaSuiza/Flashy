@@ -103,7 +103,12 @@ class StudyManager private constructor() {
 
     fun rateCard(rating: Int) {
         val date = format.parse(currentCard().dueDate)!!
-        calendar.time = date
+        if (date < Date()) {
+            calendar.time = Date()
+        }
+        else {
+            calendar.time = date
+        }
         val newInterval: Float = if (currentCard().interval < firstInterval) {
             firstInterval
         } else if (rating == 0) {

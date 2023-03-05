@@ -37,4 +37,10 @@ interface DeckDao {
 
     @Query("SELECT DISTINCT deck.* FROM deck, card ON deck.id = card.deck WHERE card.due_date <= :date")
     fun getAllDecksForDay(date: String): Flow<List<Deck>>
+
+    @Query("SELECT COUNT(*) FROM deck")
+    fun getDecksCount(): Flow<Int>
+
+    @Query("SELECT COUNT(DISTINCT deck.id) FROM deck, card ON deck.id = card.deck WHERE card.due_date <= :date")
+    fun getDueDecksCount(date: String): Flow<Int>
 }

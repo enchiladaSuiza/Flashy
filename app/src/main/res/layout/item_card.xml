@@ -5,7 +5,8 @@
     android:id="@+id/item_card_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_round"
+    android:background="@drawable/shape_deck_background"
+    android:elevation="2dp"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 

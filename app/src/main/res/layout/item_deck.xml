@@ -5,8 +5,9 @@
     android:id="@+id/item_deck_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_round"
-    android:foreground="?android:attr/selectableItemBackground" >
+    android:background="@drawable/shape_deck_background"
+    android:elevation="4dp"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/card_view_button"
@@ -43,7 +44,9 @@
         android:maxLines="3"
         android:text="@string/placeholder_deck_name"
         android:textAlignment="center"
+        android:textAllCaps="false"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/card_view_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

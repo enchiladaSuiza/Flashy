@@ -37,6 +37,10 @@ class ModeManager private constructor() {
         return mode.toString()
     }
 
+    fun getNextModeString(): String {
+        return mode.nextMode().toString()
+    }
+
     fun switchMode() {
         mode = mode.nextMode()
     }

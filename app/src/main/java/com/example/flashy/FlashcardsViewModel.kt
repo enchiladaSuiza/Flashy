@@ -187,6 +187,14 @@ class FlashcardsViewModel(
         }
     }
 
+    fun retrieveDecksCount(): LiveData<Int> {
+        return deckDao.getDecksCount().asLiveData()
+    }
+
+    fun retrieveDueDecksCount(date: String): LiveData<Int> {
+        return deckDao.getDueDecksCount(date).asLiveData()
+    }
+
     class FlashcardsViewModelFactory(
         private val deckDao: DeckDao,
         private val cardDao: CardDao
