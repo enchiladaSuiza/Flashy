@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_deck_background"
-    android:elevation="4dp"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:elevation="4dp">
 
     <ImageView
         android:id="@+id/card_view_button"
@@ -52,5 +51,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deck_edit_button"
         app:layout_wrapBehaviorInParent="included" />
+
+    <TextView
+        android:id="@+id/due_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/shape_deck_background"
+        android:backgroundTint="?attr/colorSecondaryVariant"
+        android:padding="2dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:textColor="?attr/colorOnSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.flashy.*
@@ -17,6 +18,7 @@ import com.example.flashy.databinding.FragmentDecksBinding
 import com.example.flashy.recyclerview.DeckListAdapter
 import com.example.flashy.recyclerview.GridItemDecoration
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,7 +35,7 @@ class DecksFragment : Fragment() {
 
     private lateinit var provider: MenuProvider
 
-    private lateinit var format: SimpleDateFormat
+    private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,13 +63,19 @@ class DecksFragment : Fragment() {
             val action = DecksFragmentDirections
                 .actionDecksFragmentToStudyActivity(it.name)
             this.findNavController().navigate(action)
+        }, {
+            deck, textView ->
+            run {
+                viewModel.retrieveDueCardsCountFromDeck(deck.id, format.format(Date()))
+                    .observe(this.viewLifecycleOwner) {
+                    textView.text = it.toString()
+                }
+            }
         })
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = GridLayoutManager(this.context, 2)
         binding.recyclerView.addItemDecoration(GridItemDecoration(22))
-
-        format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         if (ModeManager.getInstance().getMode() == ModeManager.Mode.FREE) {
             viewModel.allDecks.observe(viewLifecycleOwner) { decks ->
