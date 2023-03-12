@@ -54,7 +54,7 @@ class DecksFragment : Fragment() {
         }, {
             showDeckOptionsDialog(it)
         }, {
-            if (ModeManager.getInstance().getMode() == ModeManager.Mode.FREE) {
+            if (ModeManager.getInstance().isFree()) {
                 StudyManager.getInstance().prepareCards(this.viewLifecycleOwner, viewModel, it.id)
             }
             else {
@@ -77,7 +77,7 @@ class DecksFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(this.context, 2)
         binding.recyclerView.addItemDecoration(GridItemDecoration(22))
 
-        if (ModeManager.getInstance().getMode() == ModeManager.Mode.FREE) {
+        if (ModeManager.getInstance().isFree()) {
             viewModel.allDecks.observe(viewLifecycleOwner) { decks ->
                 decks.let {
                     adapter.submitList(it)
@@ -173,23 +173,12 @@ class DecksFragment : Fragment() {
         button?.setOnClickListener { switchMode() }
 
         val badgeView = item.actionView?.findViewById<TextView>(R.id.mode_badge)
+        badgeView?.visibility = View.INVISIBLE
 
         viewModel.retrieveDueDecksCount(format.format(Date())).observe(viewLifecycleOwner) {
-            if (it == 0) {
-                if (ModeManager.getInstance().getMode() == ModeManager.Mode.SRS) {
-                    switchMode()
-                }
-                badgeView?.visibility = View.INVISIBLE
-                button?.visibility = View.INVISIBLE
-            }
-            else {
-                if (ModeManager.getInstance().getMode() == ModeManager.Mode.SRS) {
-                    badgeView?.visibility = View.INVISIBLE
-                }
-                else {
-                    badgeView?.visibility = View.VISIBLE
-                    badgeView?.text = it.toString()
-                }
+            if (ModeManager.getInstance().isFree() && it > 0) {
+                badgeView?.visibility = View.VISIBLE
+                badgeView?.text = it.toString()
             }
         }
     }

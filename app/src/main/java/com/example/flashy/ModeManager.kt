@@ -30,7 +30,7 @@ class ModeManager private constructor() {
     private var mode : Mode = Mode.FREE
 
     fun getMode(): Mode {
-        return mode;
+        return mode
     }
 
     fun getModeString(): String {
@@ -43,6 +43,14 @@ class ModeManager private constructor() {
 
     fun switchMode() {
         mode = mode.nextMode()
+    }
+
+    fun isSRS(): Boolean {
+        return mode == Mode.SRS
+    }
+
+    fun isFree(): Boolean {
+        return mode == Mode.FREE
     }
 
     fun setTheme(context: Context) {
