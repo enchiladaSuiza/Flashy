@@ -80,6 +80,7 @@ class CardFrontFragment : Fragment() {
                 actionBar?.title = StudyActivityArgs.fromBundle(bundle).title + " (" +
                         StudyManager.getInstance().remainingCards().toString() + ")"
             }
+            frontCardLayout.setOnClickListener { goToCardBack() }
             if (card.frontContent.isBlank()) {
                 frontCardLayout.removeView(cardFrontText)
             } else {

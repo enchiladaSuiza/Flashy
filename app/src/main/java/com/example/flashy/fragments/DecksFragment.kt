@@ -111,7 +111,6 @@ class DecksFragment : Fragment() {
         }
 
         requireActivity().addMenuProvider(provider)
-        // requireActivity().actionBar?.setIcon(R.mipmap.ic_launcher_foreground)
     }
 
     override fun onDestroyView() {

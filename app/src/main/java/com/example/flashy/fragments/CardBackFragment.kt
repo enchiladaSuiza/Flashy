@@ -92,7 +92,7 @@ class CardBackFragment : Fragment() {
             } else {
                 backCardLayout.removeView(backAudioPlay)
             }
-
+            backCardLayout.setOnClickListener { findNavController().navigateUp() }
             goodButton.setOnClickListener { goToNextFront(1) }
             againButton.setOnClickListener {
                 StudyManager.getInstance().sendCurrentCardToBack()
@@ -102,8 +102,8 @@ class CardBackFragment : Fragment() {
     }
 
     private fun goToCardsFragment() {
-        this.findNavController().navigateUp()
-        this.findNavController().navigateUp()
+        findNavController().navigateUp()
+        findNavController().navigateUp()
     }
 
     override fun onDestroyView() {

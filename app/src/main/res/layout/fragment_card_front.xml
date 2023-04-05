@@ -77,14 +77,16 @@
         </ScrollView>
     </RelativeLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/turn_over_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/turn_over"
+        app:icon="@drawable/baseline_flip_to_back_24"
+        app:iconPadding="0dp"
+        app:iconGravity="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

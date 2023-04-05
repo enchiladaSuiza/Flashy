@@ -19,6 +19,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme.Flashy.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/star_svg</item>
+        <item name="postSplashScreenTheme">@style/Theme.Flashy.NoActionBar</item>
+    </style>
+
     <style name="Theme.Flashy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Flashy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
