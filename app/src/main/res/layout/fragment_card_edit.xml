@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.CardEditFragment">
 
-
     <ScrollView
         android:id="@+id/card_content_scrollview"
         android:layout_width="match_parent"
@@ -276,7 +275,7 @@
                 android:text="@string/due_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_back_pick_audio" />
+                app:layout_constraintTop_toBottomOf="@+id/play_back_audio" />
 
             <TextView
                 android:id="@+id/card_interval"

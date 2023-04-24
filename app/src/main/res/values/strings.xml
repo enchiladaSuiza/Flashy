@@ -58,6 +58,6 @@
     <string name="play_back_audio">Reproducir audio posterior</string>
     <string name="srs">SRS</string>
     <string name="free">Libre</string>
-    <string name="due_date">Due Date</string>
-    <string name="interval">Interval</string>
+    <string name="due_date">Fecha de estudio</string>
+    <string name="interval">Intervalo</string>
 </resources>

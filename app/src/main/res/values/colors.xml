@@ -11,6 +11,10 @@
     <color name="green_700">#388e3c</color>
 
     <color name="black">#FF000000</color>
+    <color name="gray_800">#262626</color>
+    <color name="gray_700">#434343</color>
+    <color name="gray_600">#555555</color>
+    <color name="gray_500">#7B7B7B</color>
     <color name="white">#FFFFFFFF</color>
 
     <color name="orange">#f57c00</color>

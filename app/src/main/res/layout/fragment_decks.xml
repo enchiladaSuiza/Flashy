@@ -5,7 +5,7 @@
     android:id="@+id/item_card_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorOnBackground"
+    android:background="?attr/colorPrimarySurface"
     tools:context=".fragments.DecksFragment">
 
     <androidx.recyclerview.widget.RecyclerView

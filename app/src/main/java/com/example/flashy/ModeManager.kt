@@ -28,6 +28,7 @@ class ModeManager private constructor() {
     }
 
     private var mode : Mode = Mode.FREE
+    private var light : Boolean = true
 
     fun getMode(): Mode {
         return mode

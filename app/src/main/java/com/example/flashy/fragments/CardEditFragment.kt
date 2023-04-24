@@ -197,8 +197,8 @@ class CardEditFragment : Fragment() {
             }
             dueDate = card.dueDate
             interval = card.interval
-            cardDueDate.text = card.dueDate
-            cardInterval.text = card.interval.toString()
+            cardDueDate.text = resources.getString(R.string.due_date) + ": " + card.dueDate
+            cardInterval.text = resources.getString(R.string.interval) + ": " + card.interval.toString()
         }
         bindImages()
     }
@@ -213,8 +213,8 @@ class CardEditFragment : Fragment() {
             saveCardButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 startToStart = ConstraintLayout.LayoutParams.PARENT_ID
             }
-            cardDueDate.text = dueDate
-            cardInterval.text = interval.toString()
+            cardDueDate.text = ""
+            cardInterval.text = ""
         }
         bindImages()
     }
@@ -452,6 +452,7 @@ class CardEditFragment : Fragment() {
     }
 
     private fun startRecording() {
+        if (!getMicPermission()) return
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)

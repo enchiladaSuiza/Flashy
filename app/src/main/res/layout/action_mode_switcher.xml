@@ -13,7 +13,7 @@
         android:id="@+id/mode_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorOnBackground"
+        android:backgroundTint="?attr/colorPrimarySurface"
         android:elevation="0dp"
         android:insetLeft="16dp"
         android:insetTop="10dp"
@@ -37,7 +37,7 @@
         android:elevation="4dp"
         android:gravity="center"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white"
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="@+id/mode_title"
         app:layout_constraintTop_toTopOf="parent" />
